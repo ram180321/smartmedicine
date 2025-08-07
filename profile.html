@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Your Profile - DoseMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+        body { background: linear-gradient(135deg, #e0f7fa, #fff3e0); height: 100vh; display: flex; }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px; background-color: #263238; color: white;
+            padding: 30px 20px; display: flex; flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 28px; font-weight: 700; margin-bottom: 40px;
+            background: linear-gradient(to right, #4fc3f7, #81c784);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .sidebar a {
+            color: white; text-decoration: none; margin: 15px 0; font-size: 18px;
+            transition: 0.3s ease;
+            display: block;
+        }
+        .sidebar a:hover { color: #81c784; }
+
+        /* Main Content Styles */
+        .main {
+            flex: 1; padding: 30px;
+            overflow-y: auto;
+        }
+        .profile-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            gap: 25px;
+        }
+
+        /* Profile Card Styles */
+        .profile-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .profile-card h3, .profile-card h4 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: #e0f7fa;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: #4fc3f7;
+        }
+
+        .profile-details h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #263238;
+        }
+
+        .profile-details p {
+            font-size: 16px;
+            color: #777;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:disabled {
+            background-color: #f0f0f0;
+            color: #888;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .button-group .edit-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .button-group .edit-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .button-group .save-btn {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .button-group .save-btn:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: auto;
+            margin-top: 20px;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">DoseMate 💊</div>
+        <a href="1.html">Dashboard</a>
+        <a href="medicines.html">Your Medicines</a>
+        <a href="reminders.html">Reminders</a>
+        <a href="refill.html">Refill Alerts</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
+
+    <div class="main">
+        <div class="profile-container">
+            <div class="profile-card">
+                <h3>User Information</h3>
+                <div class="profile-info">
+                    <div class="profile-avatar">
+                        <span id="profileInitials"></span>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="displayNameDisplay">Loading...</h2>
+                        <p id="emailDisplay">Loading...</p>
+                        <p id="whatsappDisplay">WhatsApp: Not Set</p>
+                    </div>
+                </div>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="displayName">Edit Name:</label>
+                        <input type="text" id="displayName" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="whatsappNumber">WhatsApp Number:</label>
+                        <input type="tel" id="whatsappNumber" placeholder="e.g., +919876543210" disabled>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="edit-btn" id="editBtn" onclick="toggleEditMode()">Edit Profile</button>
+                        <button type="button" class="save-btn" id="saveBtn" style="display:none;" onclick="saveProfile()">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-card">
+                <h3>Change Password</h3>
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label for="newPassword">New Password:</label>
+                        <input type="password" id="newPassword" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="save-btn" onclick="changePassword()">Change Password</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-card">
+                <h4>Danger Zone</h4>
+                <p>Permanently delete your account and all associated data.</p>
+                <button type="button" class="delete-btn" onclick="deleteAccount()">Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbq0tDMH4vXUwBGTA1z_4KqfCQjqEhSLI",
+            authDomain: "dose-mate-70662.firebaseapp.com",
+            projectId: "dose-mate-70662",
+            storageBucket: "dose-mate-70662.appspot.com",
+            messagingSenderId: "222253636993",
+            appId: "1:222253636993:web:56db06bd0f02c5df6b5c80"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let user;
+        const displayNameInput = document.getElementById("displayName");
+        const whatsappNumberInput = document.getElementById("whatsappNumber");
+        const profileInitials = document.getElementById("profileInitials");
+        const displayNameDisplay = document.getElementById("displayNameDisplay");
+        const emailDisplay = document.getElementById("emailDisplay");
+        const whatsappDisplay = document.getElementById("whatsappDisplay");
+        const editBtn = document.getElementById("editBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const newPasswordInput = document.getElementById("newPassword");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+        
+        // --- Auth State and Data Loading ---
+        onAuthStateChanged(auth, async (authUser) => {
+            if (authUser) {
+                user = authUser;
+                const name = user.displayName || "User";
+                const email = user.email || "No Email";
+
+                // Get user data from Firestore
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                let whatsappNumber = "";
+                if (userDocSnap.exists()) {
+                    whatsappNumber = userDocSnap.data().whatsappNumber || "";
+                }
+
+                // Populate UI fields
+                displayNameInput.value = name;
+                whatsappNumberInput.value = whatsappNumber;
+                displayNameDisplay.textContent = name;
+                emailDisplay.textContent = email;
+                if (whatsappNumber) {
+                    whatsappDisplay.textContent = `WhatsApp: ${whatsappNumber}`;
+                } else {
+                    whatsappDisplay.textContent = "WhatsApp: Not Set";
+                }
+                
+                // Get initials for the avatar
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+                profileInitials.textContent = initials.substring(0, 2);
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // --- Profile Management Functions ---
+        window.toggleEditMode = () => {
+            const isEditing = displayNameInput.disabled;
+            displayNameInput.disabled = !isEditing;
+            whatsappNumberInput.disabled = !isEditing; // Enable/disable WhatsApp input
+            editBtn.style.display = isEditing ? "none" : "block";
+            saveBtn.style.display = isEditing ? "block" : "none";
+        };
+
+        window.saveProfile = async () => {
+            const newName = displayNameInput.value;
+            const newWhatsappNumber = whatsappNumberInput.value;
+
+            if (!user) {
+                alert("User not authenticated.");
+                return;
+            }
+
+            try {
+                // Update Firebase Auth display name
+                await updateProfile(user, {
+                    displayName: newName
+                });
+
+                // Update Firestore document with new data
+                const userDocRef = doc(db, "users", user.uid);
+                await setDoc(userDocRef, {
+                    whatsappNumber: newWhatsappNumber
+                }, { merge: true }); // Use merge to avoid overwriting other data
+
+                alert("Profile updated successfully!");
+                
+                // Update UI immediately
+                displayNameDisplay.textContent = newName;
+                const initials = newName.split(' ').map(n => n[0]).join('').toUpperCase();
+                profileInitials.textContent = initials.substring(0, 2);
+                if (newWhatsappNumber) {
+                    whatsappDisplay.textContent = `WhatsApp: ${newWhatsappNumber}`;
+                } else {
+                    whatsappDisplay.textContent = "WhatsApp: Not Set";
+                }
+
+                toggleEditMode(); // Go back to read-only mode
+            } catch (error) {
+                console.error("Error updating profile: ", error);
+                alert("Failed to update profile. Please try again.");
+            }
+        };
+
+        window.changePassword = async () => {
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (newPassword !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return;
+            }
+
+            if (user) {
+                try {
+                    await updatePassword(user, newPassword);
+                    alert("Password updated successfully!");
+                    // Clear the password fields
+                    newPasswordInput.value = "";
+                    confirmPasswordInput.value = "";
+                } catch (error) {
+                    console.error("Error updating password: ", error);
+                    alert("Failed to update password. Please try again or re-authenticate.");
+                }
+            }
+        };
+
+        window.deleteAccount = async () => {
+            if (confirm("Are you sure you want to permanently delete your account? This action cannot be undone.")) {
+                try {
+                    await deleteUser(user);
+                    alert("Account successfully deleted.");
+                    window.location.href = "index.html"; // Redirect to login page
+                } catch (error) {
+                    console.error("Error deleting account: ", error);
+                    alert("Failed to delete account. Please try logging in again and try this action.");
+                }
+            }
+        };
+
+        window.logout = async () => {
+            await signOut(auth);
+            window.location.href = "index.html";
+        };
+    </script>
+</body>
+</html>
