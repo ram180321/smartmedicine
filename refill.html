@@ -1,44 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Refill Alerts - DoseMate</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-    body { background: linear-gradient(135deg, #e0f7fa, #fff3e0); height: 100vh; display: flex; }
-    .sidebar {
-      width: 250px; background-color: #263238; color: white;
-      padding: 30px 20px; display: flex; flex-direction: column;
-    }
-    .logo {
-      font-size: 28px; font-weight: 700; margin-bottom: 40px;
-      background: linear-gradient(to right, #4fc3f7, #81c784);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    }
-    .sidebar a {
-      color: white; text-decoration: none; margin: 15px 0; font-size: 18px;
-      transition: 0.3s ease;
-    }
-    .sidebar a:hover { color: #81c784; }
-    .main { flex: 1; padding: 30px; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Refill Alerts - DoseMate</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+body { background:linear-gradient(135deg, #e0f7fa, #fff3e0); height:100vh; display:flex; }
+.sidebar { width:250px; background-color:#263238; color:white; padding:30px 20px; display:flex; flex-direction:column; }
+.logo { font-size:28px; font-weight:700; margin-bottom:40px; background:linear-gradient(to right,#4fc3f7,#81c784); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:1px 1px 2px rgba(0,0,0,0.3); }
+.sidebar a { color:white; text-decoration:none; margin:15px 0; font-size:18px; transition:0.3s ease; }
+.sidebar a:hover { color:#81c784; }
+.main { flex:1; padding:30px; overflow-y:auto; }
+.refill-card { background:#fff; border-radius:10px; padding:20px; margin-bottom:15px; box-shadow:0 4px 15px rgba(0,0,0,0.1); display:flex; justify-content:space-between; align-items:center; }
+.badge { padding:5px 10px; border-radius:12px; color:white; font-size:14px; }
+.badge.green { background-color:#4caf50; }
+.badge.orange { background-color:#ff9800; }
+.badge.red { background-color:#f44336; }
+</style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="logo">DoseMate 💊</div>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="medicines.html">Your Medicines</a>
-    <a href="reminders.html">Reminders</a>
-    <a href="refill.html">Refill Alerts</a>
-    <a href="profile.html">Profile</a>
-    <a href="index.html">Logout</a>
-  </div>
-  <div class="main">
-    <h2>Refill Alerts</h2>
-    <p>Track your medicine stock and get refill notifications.</p>
-  </div>
+<div class="sidebar">
+<div class="logo">DoseMate 💊</div>
+<a href="1.html">Dashboard</a>
+<a href="medicines.html">Your Medicines</a>
+<a href="reminders.html">Reminders</a>
+<a href="refill.html">Refill Alerts</a>
+<a href="profile.html">Profile</a>
+<a href="#" onclick="logout()">Logout</a>
+</div>
+<div class="main">
+<h2>Refill Alerts</h2>
+<div id="refill-list"></div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbq0tDMH4vXUwBGTA1z_4KqfCQjqEhSLI",
+      authDomain: "dose-mate-70662.firebaseapp.com",
+      projectId: "dose-mate-70662",
+      storageBucket: "dose-mate-70662.appspot.com",
+      messagingSenderId: "222253636993",
+      appId: "1:222253636993:web:56db06bd0f02c5df6b5c80"
+    };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let user;
+const refillList = document.getElementById("refill-list");
+onAuthStateChanged(auth, (authUser) => {
+  if (authUser) {
+    user = authUser;
+    const q = query(collection(db, "medicines"), where("userId", "==", user.uid));
+    onSnapshot(q, (snapshot) => {
+      refillList.innerHTML = "";
+      snapshot.forEach(doc => {
+        const med = doc.data();
+        let statusClass = "green", statusText = "In Stock";
+        if (med.stock <= 3 && med.stock > 0) { statusClass = "orange"; statusText = "Low Stock"; }
+        if (med.stock === 0) { statusClass = "red"; statusText = "Out of Stock"; }
+        refillList.innerHTML += `<div class="refill-card">
+          <div>
+            <h3>${med.name}</h3>
+            <p><strong>Stock:</strong> ${med.stock}</p>
+          </div>
+          <span class="badge ${statusClass}">${statusText}</span>
+        </div>`;
+      });
+    });
+  } else {
+    window.location.href = "index.html";
+  }
+});
+window.logout = async () => { await signOut(auth); };
+</script>
 </body>
 </html>
