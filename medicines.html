@@ -1,390 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Your Medicines - DoseMate</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        /* General Styles */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-        body { background: linear-gradient(135deg, #e0f7fa, #fff3e0); min-height: 100vh; display: flex; }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: 250px; background-color: #263238; color: white;
-            padding: 30px 20px; display: flex; flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 28px; font-weight: 700; margin-bottom: 40px;
-            background: linear-gradient(to right, #4fc3f7, #81c784);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-        .sidebar a {
-            color: white; text-decoration: none; margin: 15px 0; font-size: 18px;
-            transition: 0.3s ease;
-            display: block;
-        }
-        .sidebar a:hover { color: #81c784; }
-
-        /* Main Content Styles */
-        .main {
-            flex: 1; padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            overflow-y: auto;
-        }
-        .header h2 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        /* Medicines Grid */
-        #medicines-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            flex-grow: 1;
-        }
-        .medicine-card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            transition: transform 0.2s ease;
-        }
-        .medicine-card:hover {
-            transform: translateY(-5px);
-        }
-        .medicine-card h3 {
-            font-size: 20px;
-            color: #263238;
-            margin-bottom: 10px;
-        }
-        .medicine-card p {
-            color: #666;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-        .medicine-card .actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-        .medicine-card .actions button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 5px;
-            color: #888;
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-        .medicine-card .actions button:hover {
-            color: #263238;
-            transform: scale(1.1);
-        }
-        .medicine-card .actions .edit-btn:hover { color: #007bff; }
-        .medicine-card .actions .delete-btn:hover { color: #f44336; }
-        .no-medicines-message {
-            text-align: center;
-            color: #888;
-            font-size: 18px;
-            padding: 50px;
-            display: none;
-        }
-
-        /* Modal Styles */
-        .modal {
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .modal-header h3 {
-            margin: 0;
-            color: #333;
-        }
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #aaa;
-        }
-        .close-btn:hover { color: #333; }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .form-actions button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .form-actions .cancel-btn {
-            background-color: #ddd;
-        }
-        .form-actions .save-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Medicines - DoseMate</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+body { background: linear-gradient(135deg, #e0f7fa, #fff3e0); min-height:100vh; display:flex; }
+.sidebar { width:250px; background-color:#263238; color:white; padding:30px 20px; display:flex; flex-direction:column; }
+.logo { font-size:28px; font-weight:700; margin-bottom:40px; background:linear-gradient(to right, #4fc3f7, #81c784); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:1px 1px 2px rgba(0,0,0,0.3); }
+.sidebar a { color:white; text-decoration:none; margin:15px 0; font-size:18px; transition:0.3s ease; }
+.sidebar a:hover { color:#81c784; }
+.main { flex:1; padding:30px; }
+.medicine-card { background:#fff; border-radius:10px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.1); margin-bottom:20px; }
+</style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">DoseMate 💊</div>
-        <a href="1.html">Dashboard</a>
-        <a href="medicines.html">Your Medicines</a>
-        <a href="reminders.html">Reminders</a>
-        <a href="refill.html">Refill Alerts</a>
-        <a href="profile.html">Profile</a>
-        <a href="#" onclick="logout()">Logout</a>
-    </div>
+<div class="sidebar">
+<div class="logo">DoseMate 💊</div>
+<a href="1.html">Dashboard</a>
+<a href="medicines.html">Your Medicines</a>
+<a href="reminders.html">Reminders</a>
+<a href="refill.html">Refill Alerts</a>
+<a href="profile.html">Profile</a>
+<a href="#" onclick="logout()">Logout</a>
+</div>
+<div class="main">
+<h2>Your Medicines</h2>
+<div id="med-list"></div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-    <div class="main">
-        <div class="header">
-            <h2>Your Medicines</h2>
-        </div>
-        <div class="no-medicines-message" id="no-medicines-message">
-            You haven't added any medicines yet. Add one from the dashboard!
-        </div>
-        <div id="medicines-container">
-            <!-- Medicine cards will be dynamically inserted here -->
-        </div>
-    </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbq0tDMH4vXUwBGTA1z_4KqfCQjqEhSLI",
+      authDomain: "dose-mate-70662.firebaseapp.com",
+      projectId: "dose-mate-70662",
+      storageBucket: "dose-mate-70662.appspot.com",
+      messagingSenderId: "222253636993",
+      appId: "1:222253636993:web:56db06bd0f02c5df6b5c80"
+    };
 
-    <!-- Edit Medicine Modal -->
-    <div id="medicine-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">Edit Medicine</h3>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-            </div>
-            <form id="medicine-form">
-                <input type="hidden" id="medicine-id">
-                <div class="form-group">
-                    <label for="medicine-name">Medicine Name:</label>
-                    <input type="text" id="medicine-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="medicine-dosage">Dosage (e.g., 500mg):</label>
-                    <input type="text" id="medicine-dosage" required>
-                </div>
-                <div class="form-group">
-                    <label for="medicine-frequency">Frequency (e.g., Once a day):</label>
-                    <input type="text" id="medicine-frequency" required>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="save-btn">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getFirestore, doc, collection, addDoc, onSnapshot, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-        
-        // Use global variables for Firebase configuration
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // Initialize Firebase services
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let user;
-        let userId;
-
-        const medicinesContainer = document.getElementById("medicines-container");
-        const noMedicinesMessage = document.getElementById("no-medicines-message");
-        const modal = document.getElementById("medicine-modal");
-        const form = document.getElementById("medicine-form");
-        const medicineIdInput = document.getElementById("medicine-id");
-        const modalTitle = document.getElementById("modal-title");
-        const nameInput = document.getElementById("medicine-name");
-        const dosageInput = document.getElementById("medicine-dosage");
-        const frequencyInput = document.getElementById("medicine-frequency");
-        
-        // Check authentication state and sign in
-        onAuthStateChanged(auth, async (authUser) => {
-            if (authUser) {
-                user = authUser;
-                userId = user.uid;
-
-                // Set up a real-time listener for the user's medicines
-                // THIS IS THE CRITICAL PATH: artifacts/YOUR_APP_ID/users/USER_UID/medicines
-                const medicinesCollectionRef = collection(db, "artifacts", appId, "users", userId, "medicines");
-                const q = query(medicinesCollectionRef);
-
-                onSnapshot(q, (snapshot) => {
-                    medicinesContainer.innerHTML = '';
-                    const medicineList = [];
-                    snapshot.forEach((doc) => {
-                        medicineList.push({ id: doc.id, ...doc.data() });
-                    });
-                    console.log("Fetched medicines from Firestore (medicines.html):", medicineList); // Debugging log
-                    renderMedicines(medicineList);
-                });
-
-            } else {
-                // If not authenticated, redirect to the login page
-                window.location.href = "index.html";
-            }
-        });
-        
-        // Function to render the medicine cards
-        function renderMedicines(medicines) {
-            if (medicines.length === 0) {
-                noMedicinesMessage.style.display = 'block';
-            } else {
-                noMedicinesMessage.style.display = 'none';
-                medicines.forEach(medicine => {
-                    const card = document.createElement('div');
-                    card.className = 'medicine-card';
-                    // Escape single quotes in medicine data to prevent JavaScript errors in the onclick attribute
-                    const escapedName = medicine.name.replace(/'/g, "\\'");
-                    const escapedDosage = medicine.dosage.replace(/'/g, "\\'");
-                    const escapedFrequency = medicine.frequency.replace(/'/g, "\\'");
-
-                    card.innerHTML = `
-                        <div>
-                            <h3>${medicine.name}</h3>
-                            <p><strong>Dosage:</strong> ${medicine.dosage}</p>
-                            <p><strong>Frequency:</strong> ${medicine.frequency}</p>
-                        </div>
-                        <div class="actions">
-                            <button class="edit-btn" onclick="editMedicine('${medicine.id}', '${escapedName}', '${escapedDosage}', '${escapedFrequency}')">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 20h9"></path>
-                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                                </svg>
-                            </button>
-                            <button class="delete-btn" onclick="deleteMedicine('${medicine.id}')">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 6h18"></path>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    `;
-                    medicinesContainer.appendChild(card);
-                });
-            }
-        }
-        
-        // Functions for the modal (Edit only, no Add button on this page)
-        window.closeModal = () => {
-            modal.style.display = "none";
-        };
-        
-        window.editMedicine = (id, name, dosage, frequency) => {
-            modalTitle.textContent = "Edit Medicine";
-            medicineIdInput.value = id;
-            nameInput.value = name;
-            dosageInput.value = dosage;
-            frequencyInput.value = frequency;
-            modal.style.display = "flex";
-        };
-
-        // Handle form submission for editing
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = medicineIdInput.value;
-            const name = nameInput.value;
-            const dosage = dosageInput.value;
-            const frequency = frequencyInput.value;
-            
-            if (!user) {
-                alert("User not authenticated. Please log in again.");
-                return;
-            }
-            
-            try {
-                const docRef = doc(db, "artifacts", appId, "users", userId, "medicines", id);
-                await updateDoc(docRef, { name, dosage, frequency });
-                closeModal();
-            } catch (error) {
-                console.error("Error updating medicine: ", error);
-                alert("Failed to save medicine. Please try again.");
-            }
-        });
-
-        // Function to delete a medicine
-        window.deleteMedicine = async (id) => {
-            if (confirm("Are you sure you want to delete this medicine?")) {
-                try {
-                    const docRef = doc(db, "artifacts", appId, "users", userId, "medicines", id);
-                    await deleteDoc(docRef);
-                } catch (error) {
-                    console.error("Error deleting medicine: ", error);
-                    alert("Failed to delete medicine. Please try again.");
-                }
-            }
-        };
-
-        window.logout = async () => {
-            await signOut(auth);
-            window.location.href = "index.html";
-        };
-    </script>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let user;
+const medList = document.getElementById("med-list");
+onAuthStateChanged(auth, (authUser) => {
+  if (authUser) {
+    user = authUser;
+    const q = query(collection(db, "medicines"), where("userId", "==", user.uid));
+    onSnapshot(q, (snapshot) => {
+      medList.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const med = doc.data();
+        medList.innerHTML += `<div class="medicine-card">
+          <h3>${med.name}</h3>
+          <p><strong>Dosage:</strong> ${med.dose}</p>
+          <p><strong>Time:</strong> ${med.time}</p>
+          <p><strong>Recurrence:</strong> ${med.recurrence}</p>
+          <p><strong>Stock:</strong> ${med.stock}</p>
+        </div>`;
+      });
+    });
+  } else {
+    window.location.href = "index.html";
+  }
+});
+window.logout = async () => { await signOut(auth); };
+</script>
 </body>
 </html>
