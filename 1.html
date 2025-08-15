@@ -230,6 +230,7 @@
       <input type="text" id="medName" placeholder="Medicine Name" />
       <input type="text" id="medDose" placeholder="Dosage (e.g., 1 tablet)" />
       
+      <input type="number" id="medStock" placeholder="Stock Count" min="0" />
       <div class="time-input-container">
           <label for="medTime">Set Reminder Time:</label>
           <input type="time" id="medTime" />
@@ -379,6 +380,7 @@
 
       try {
         await addDoc(collection(db, "medicines"), {
+          stock: parseInt(document.getElementById('medStock').value) || 0,
           userId: user.uid,
           name: name,
           dose: dose,
